@@ -5,13 +5,13 @@
       </ion-back-button>
     </ion-buttons>
     <ion-title>{{recipe?.title}}</ion-title>
+    <ion-icon class="ion-padding-end" size="large" name="bookmark-outline" color="primary" slot="end" (click)="openAlert($event)"></ion-icon>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content color="secondary">
   <ion-img class="ion-padding-vertical ion-text-center" [src]="recipe?.imageUrl" style="width: 90%; padding-left: 8%;"></ion-img>
-
-  <ion-text class="ion-padding-vertical ion-padding-start" style="display: block; white-space: pre-line;">{{recipe?.description}}</ion-text>
-
-  <ion-icon class="ion-padding-vertical" name="bookmarks-sharp" color="secondary" slot="end" (click)="openAlert($event)"></ion-icon>
+  <ion-text class="ion-padding-vertical ion-padding-start" style="display: block; white-space: pre-line;">{{recipe?.description}}</ion-text>  
 </ion-content>
+
+
