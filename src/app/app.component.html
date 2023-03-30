@@ -1,3 +1,48 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu side="start" contentId="main">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-list lines="none">
+
+        <ion-menu-toggle>
+          <ion-item routerLink="/recipes">
+            <ion-icon name="home-outline" slot="start"></ion-icon>
+            Home
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item routerLink="/auth/user-details">
+            <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+            My profile
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item routerLink="/theme-settings">
+            <ion-icon name="color-palette-outline" slot="start"></ion-icon>
+            Theme settings
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <!-- <ion-item (click)="logOut()">
+            <ion-icon name="log-out" slot="start"></ion-icon>
+            Log out
+          </ion-item> -->
+        </ion-menu-toggle>
+
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main"></ion-router-outlet>
+
+
+
 </ion-app>
