@@ -11,27 +11,22 @@ import { RecipesService } from '../recipes.service';
 export class ExplorePage implements OnInit {
 
 
-  recipes: Recipe[]|undefined;
+  recipes: Recipe[] | undefined;
   private recipesSub: Subscription | undefined;
 
-  constructor(private recipesService: RecipesService) { 
-    //this.recipesSub=
-    // this.recipesService.getRecipes().subscribe((recipes)=>{
-    //   this.recipes=recipes;
-    // })
-  }
+  constructor(private recipesService: RecipesService) { }
 
   ngOnInit() {
-    this.recipesSub = this.recipesService.recipes.subscribe((recipes)=>{
-      this.recipes=recipes;
+    this.recipesSub = this.recipesService.recipes.subscribe((recipes) => {
+      this.recipes = recipes;
     })
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.recipesService.getRecipes().subscribe();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.recipesSub?.unsubscribe();
   }
 

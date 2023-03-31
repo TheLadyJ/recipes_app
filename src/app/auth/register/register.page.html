@@ -35,7 +35,8 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-justify-content-center" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+      <ion-row class="ion-justify-content-center"
+        *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
         <ion-col size-sm="6" offset-sm="3">
           <p class="ion-padding-start" style="color: red;">
             Should be a valid email!</p>
@@ -51,7 +52,8 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-justify-content-center" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+      <ion-row class="ion-justify-content-center"
+        *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
         <ion-col size-sm="6" offset-sm="3">
           <p class="ion-padding-start" style="color: red;">
             Password should have at least 6 characters!</p>
@@ -67,7 +69,8 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-justify-content-center" *ngIf="registerForm.errors?.['matchingPasswords'] && registerForm.get('confirmPassword')?.touched">
+      <ion-row class="ion-justify-content-center"
+        *ngIf="registerForm.errors?.['matchingPasswords'] && registerForm.get('confirmPassword')?.touched">
         <ion-col size-sm="6" offset-sm="3">
           <p class="ion-padding-start" style="color: red;">
             Passwords don't match!</p>
@@ -76,26 +79,24 @@
 
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="6">
-          <div class="ion-text-center">
-            <ion-spinner color="primary"></ion-spinner>
-          </div>
-          <ion-button type="submit" color="bookmark" shape="round" expand="block" [disabled]="registerForm.invalid">Register</ion-button>
+          <ion-button type="submit" color="bookmark" shape="round" expand="block" [disabled]="registerForm.invalid">
+            Register</ion-button>
         </ion-col>
       </ion-row>
 
 
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-label>
-          <h3>
-            Alredy have an account?
-          </h3> 
-          <a style="color: var(--ion-color-bookmark);" href="../log-in">
-            Click here to log in!
-          </a> 
-        </ion-label>
-      </ion-col>
-    </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-label>
+            <h3>
+              Alredy have an account?
+            </h3>
+            <a style="color: var(--ion-color-bookmark);" href="../log-in">
+              Click here to log in!
+            </a>
+          </ion-label>
+        </ion-col>
+      </ion-row>
 
     </ion-grid>
   </form>

@@ -7,7 +7,7 @@ import { Recipe } from '../recipe.model';
   templateUrl: './recipe-explore-element.component.html',
   styleUrls: ['./recipe-explore-element.component.scss'],
 })
-export class RecipeExploreElementComponent  implements OnInit {
+export class RecipeExploreElementComponent implements OnInit {
 
   @Input() recipe: Recipe = {
     id: 'xxx',
@@ -20,8 +20,5 @@ export class RecipeExploreElementComponent  implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
-
-
-
+  ngOnInit() { }
 }

@@ -7,7 +7,7 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './add-recipe-modal.component.html',
   styleUrls: ['./add-recipe-modal.component.scss'],
 })
-export class AddRecipeModalComponent  implements OnInit {
+export class AddRecipeModalComponent implements OnInit {
 
   @ViewChild('f', { static: true }) form: NgForm | undefined;
 

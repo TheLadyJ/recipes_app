@@ -10,24 +10,24 @@ import { AddRecipeModalComponent } from './add-recipe-modal/add-recipe-modal.com
 })
 export class MyRecipesPage implements OnInit {
 
-  constructor(private recipesService:RecipesService, private modalCtrl: ModalController) { }
+  constructor(private recipesService: RecipesService, private modalCtrl: ModalController) { }
 
   ngOnInit() {
   }
 
-  openAddModal(){
+  openAddModal() {
     this.modalCtrl.create({
       component: AddRecipeModalComponent
-    }).then((modal)=>{
+    }).then((modal) => {
       modal.present();
       return modal.onDidDismiss();
-    }).then((resultData)=>{
-      if(resultData.role=='confirm'){
+    }).then((resultData) => {
+      if (resultData.role == 'confirm') {
         console.log(resultData);
-        let {title, shortDesc, description, imageUrl} = resultData.data.recipeData;
+        let { title, shortDesc, description, imageUrl } = resultData.data.recipeData;
         this.recipesService
-        .addRecipe(title, shortDesc, description, imageUrl)
-        .subscribe(res=>console.log(res));
+          .addRecipe(title, shortDesc, description, imageUrl)
+          .subscribe(res => console.log(res));
       }
     })
   }

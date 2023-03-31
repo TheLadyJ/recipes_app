@@ -21,25 +21,16 @@ export class RecipeDetailsPage implements OnInit {
     userId: 'xxx'
   };
 
-  //private recipesService: RecipesService u konstruktoru za ngOnInit
-  constructor(private alertCtrl: AlertController, private route:ActivatedRoute, private recipesService: RecipesService) { }
+  constructor(private alertCtrl: AlertController, private route: ActivatedRoute, private recipesService: RecipesService) { }
 
 
-  ngOnInit() { 
-    this.route.paramMap.subscribe(paramMap=>{
-      this.recipe = this.recipesService.getRecipe(paramMap.get('recipeId') as string);
+  ngOnInit() {
+    this.route.paramMap.subscribe(paramMap => {
+      this.recipesService.getRecipe(paramMap.get('recipeId') as string).subscribe((recipe) => {
+        this.recipe = recipe;
+      });
     })
   }
-
-  // ngOnInit() { 
-  //   this.route.paramMap.subscribe(paramMap=>{
-  //     this.recipesService.getRecipe(paramMap.get('recipeId') as string)?.subscribe((recipe)=>{
-  //       this.recipe=recipe;
-  //     });
-  //   })
-  // }
-
-  //ngOnInit() {}
 
   openAlert(event: any) {
     console.log(event);
