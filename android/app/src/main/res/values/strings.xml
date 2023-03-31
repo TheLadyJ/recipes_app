@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Recipes App</string>
+    <string name="title_activity_main">Recipes App</string>
+    <string name="package_name">com.mr.recipes</string>
+    <string name="custom_url_scheme">com.mr.recipes</string>
+</resources>

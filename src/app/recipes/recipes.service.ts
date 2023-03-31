@@ -1,12 +1,24 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, map, switchMap, take, tap } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { Recipe } from './recipe.model';
+
+interface RecipeData {
+  title:string;
+  shortDesc: string;
+  description: string;
+  imageUrl: string;
+}
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipesService {
 
-  recipes: Recipe[] = [
+  oldRecipes: Recipe[] = [
     {
       id: 'r1',
       title: 'Torta',
@@ -64,10 +76,120 @@ export class RecipesService {
     },
   ]
 
+  private _recipes = new BehaviorSubject<Recipe[]>([]);
 
-  constructor() { }
+
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   getRecipe(id:string){
-    return this.recipes.find(r=>r.id===id)
+    return this.oldRecipes.find(r=>r.id===id)
+  }
+
+
+  private API_link: string = 'https://mr-recipes-app-default-rtdb.europe-west1.firebasedatabase.app';
+
+  getRecipes(){
+    return this.http
+    .get<{ [key: string]: RecipeData }>(this.API_link+`/recipes.json`)
+    .pipe(
+      map((recipesData:any)=>{
+      const recipes: Recipe[] = [];
+      for(const key in recipesData){
+        if(recipesData.hasOwnProperty(key)){
+          recipes.push({
+            id:key,
+            title: recipesData[key].title,
+            shortDesc: recipesData[key].shortDesc,
+            description: recipesData[key].description,
+            imageUrl: recipesData[key].imageUrl,
+            userId: null,
+          })
+        }
+      }
+      return recipes;
+    }),
+    tap(recipes=>{
+      this._recipes.next(recipes);
+    }))
+  }
+
+  get recipes() {
+    return this._recipes.asObservable();
+  }
+
+
+  // getQuotes() {
+  //   return this.authService.token.pipe(
+  //     take(1),
+  //     switchMap(token => {
+  //       return this.http
+  //         .get<{ [key: string]: QuoteData }>(this.API_link + `/quotes.json?auth=${token}`);
+  //     }),
+  //     map((quotesData) => {
+  //       const quotes: Quote[] = [];
+  //       for (const key in quotesData) {
+  //         if (quotesData.hasOwnProperty(key)) {
+  //           quotes.push(new Quote(key, quotesData[key].author, quotesData[key].text, 'https://picsum.photos/200', quotesData[key].userId))
+  //         }
+  //       }
+  //       return quotes;
+  //     }),
+  //     tap(quotes => {
+  //       this._quotes.next(quotes);
+  //     })
+  //   );
+  // }
+
+
+  addRecipe(title: string, shortDesc: string, description:string, imageUrl: string) {
+    let newRecipe: Recipe={
+      id:null,
+      title,
+      shortDesc,
+      description,
+      imageUrl,
+      userId:null
+    };
+
+    return this.http.post<{name: string}>(this.API_link+`/recipes.json`, newRecipe)
+    .pipe(
+      switchMap(resData=>{
+        newRecipe.id=resData.name;
+        return this.recipes;
+      }),
+      take(1),
+      tap((recipes)=>{
+        this._recipes.next(recipes.concat(newRecipe));
+      }));
+
+    // return this.authService.userId.pipe(
+    //   take(1),
+    //   switchMap((userId, _index) => {
+    //     newQuote = new Quote(
+    //       null,
+    //       author,
+    //       text,
+    //       'https://picsum.photos/200',
+    //       userId
+    //     );
+    //     return this.authService.token.pipe(
+    //       take(1),
+    //       switchMap(token => {
+    //         return this.http
+    //           .post<{ name: string }>(this.API_link + `/quotes.json?auth=${token}`, newQuote);
+    //       }),
+    //     );
+    //   }),
+    //   take(1),
+    //   switchMap((resData) => {
+    //     generatedId = resData.name;
+    //     return this.quotes;
+    //   }),
+    //   take(1),
+    //   tap((quotes: any) => {
+    //     newQuote.id = generatedId;
+    //     this._quotes.next(quotes.concat(newQuote));
+    //   })
+    // );
   }
 }

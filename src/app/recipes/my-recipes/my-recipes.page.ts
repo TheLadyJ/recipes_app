@@ -24,10 +24,10 @@ export class MyRecipesPage implements OnInit {
     }).then((resultData)=>{
       if(resultData.role=='confirm'){
         console.log(resultData);
-        // let {title, shortDesc, description, imageUrl} = resultData.data.quoteData;
-        // this.recipesService
-        // .addRecipe(title, shortDesc, description, imageUrl)
-        // .subscribe();
+        let {title, shortDesc, description, imageUrl} = resultData.data.recipeData;
+        this.recipesService
+        .addRecipe(title, shortDesc, description, imageUrl)
+        .subscribe(res=>console.log(res));
       }
     })
   }
