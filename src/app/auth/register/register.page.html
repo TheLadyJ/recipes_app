@@ -6,20 +6,22 @@
 
 <ion-content>
 
+  <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+
     <ion-grid>
 
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Name</ion-label>
-            <ion-input type="text"></ion-input>
+            <ion-label color="bookmark" position="floating">Name</ion-label>
+            <ion-input type="text" formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
 
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Surname</ion-label>
-            <ion-input type="text"></ion-input>
+            <ion-label color="bookmark" position="floating">Surname</ion-label>
+            <ion-input type="text" formControlName="surname"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -27,24 +29,48 @@
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="6">
           <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input type="email"></ion-input>
+            <ion-label color="bookmark" position="floating">Email</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-justify-content-center">
+      <ion-row class="ion-justify-content-center" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
         <ion-col size-sm="6" offset-sm="3">
-          <p class="ion-padding-start">Should be a valid email!</p>
+          <p class="ion-padding-start" style="color: red;">
+            Should be a valid email!</p>
         </ion-col>
       </ion-row>
 
       <ion-row class="ion-justify-content-center">
         <ion-col size-sm="6">
           <ion-item>
-            <ion-label position="floating">Password</ion-label>
-            <ion-input type="password"></ion-input>
+            <ion-label color="bookmark" position="floating">Password</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        <ion-col size-sm="6" offset-sm="3">
+          <p class="ion-padding-start" style="color: red;">
+            Password should have at least 6 characters!</p>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col size-sm="6">
+          <ion-item>
+            <ion-label color="bookmark" position="floating">Confirm password</ion-label>
+            <ion-input type="password" formControlName="confirmPassword"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center" *ngIf="registerForm.errors?.['matchingPasswords'] && registerForm.get('confirmPassword')?.touched">
+        <ion-col size-sm="6" offset-sm="3">
+          <p class="ion-padding-start" style="color: red;">
+            Passwords don't match!</p>
         </ion-col>
       </ion-row>
 
@@ -53,7 +79,7 @@
           <div class="ion-text-center">
             <ion-spinner color="primary"></ion-spinner>
           </div>
-          <ion-button type="submit" color="primary" shape="round" expand="block">Register</ion-button>
+          <ion-button type="submit" color="bookmark" shape="round" expand="block" [disabled]="registerForm.invalid">Register</ion-button>
         </ion-col>
       </ion-row>
 
@@ -64,7 +90,7 @@
           <h3>
             Alredy have an account?
           </h3> 
-          <a href="../log-in">
+          <a style="color: var(--ion-color-bookmark);" href="../log-in">
             Click here to log in!
           </a> 
         </ion-label>
@@ -72,6 +98,6 @@
     </ion-row>
 
     </ion-grid>
-
+  </form>
 
 </ion-content>

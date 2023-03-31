@@ -24,3 +24,13 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+.ion-color-bookmark {
+    --ion-color-base: var(--ion-color-bookmark);
+    --ion-color-base-rgb: var(--ion-color-bookmark-rgb);
+    --ion-color-contrast: var(--ion-color-bookmark-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-bookmark-contrast-rgb);
+    --ion-color-shade: var(--ion-color-bookmark-shade);
+    --ion-color-tint: var(--ion-color-bookmark-tint);
+  }

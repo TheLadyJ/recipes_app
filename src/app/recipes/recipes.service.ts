@@ -29,13 +29,13 @@ export class RecipesService {
       25 g kakaa
       35 g Podravka Glatkog brašna
       10 g Dolcela Gussnela
-      
+
       ZA KREMU:
       1 Dolcela Puding vanilija
       350 ml mlijeka
       30 g šećera
       200 ml Dolcela Šlaga 5+`,
-      imageUrl: 'https://picsum.photos/200',
+      imageUrl: 'https://www.oetker.rs/Recipe/Recipes/oetker.rs/rs-sr/cakes/image-thumb__158620__RecipeDetail/baron-torta.webp',
       userId: 'u1'
     },
     {
