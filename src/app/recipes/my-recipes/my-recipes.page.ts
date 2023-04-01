@@ -39,7 +39,6 @@ export class MyRecipesPage implements OnInit {
       return modal.onDidDismiss();
     }).then((resultData) => {
       if (resultData.role == 'confirm') {
-        console.log(resultData);
         let { title, shortDesc, description, imageUrl } = resultData.data.recipeData;
         let newRecipe:Recipe={
           id: null,
@@ -51,7 +50,9 @@ export class MyRecipesPage implements OnInit {
         }
         this.recipesService
           .addRecipe(newRecipe)
-          .subscribe(res => console.log(res));
+          .subscribe(() => {
+            this.recipesService.getMyRecipes().subscribe();
+          });
       }
     })
   }
