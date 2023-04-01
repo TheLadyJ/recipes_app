@@ -45,6 +45,9 @@ export class RecipeDetailsPage implements OnInit {
           text: 'Save',
           handler: () => {
             console.log('save it');
+            this.recipesService.saveRecipe(this.recipe?.id).subscribe(()=>{
+              this.recipesService.getSavedRecipes();
+            });
           }
         },
         {

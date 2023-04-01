@@ -12,6 +12,7 @@ export class RecipesService {
 
   private _recipes = new BehaviorSubject<Recipe[]>([]);
   private _myRecipes = new BehaviorSubject<Recipe[]>([]);
+  private _savedRecipes = new BehaviorSubject<Recipe[]>([]);
 
 
   private API_link: string = 'https://mr-recipes-app-default-rtdb.europe-west1.firebasedatabase.app';
@@ -107,12 +108,65 @@ export class RecipesService {
     )
   }
 
+  private getSavedRecipesByIds(savedRecipeIds:string[]){
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http
+          .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${token}`);
+      }),
+      map((recipesData: any) => {
+        const savedRecipes: Recipe[] = [];
+        for (const key in recipesData) {
+          if (recipesData.hasOwnProperty(key) && savedRecipeIds.includes(key)) {
+            savedRecipes.push(new Recipe(
+              key,
+              recipesData[key].title,
+              recipesData[key].shortDesc,
+              recipesData[key].description,
+              recipesData[key].imageUrl,
+              recipesData[key].userId));
+          }
+        }
+        return savedRecipes;
+      }),
+      tap(savedRecipes => {
+        this._savedRecipes.next(savedRecipes);
+      })
+    )
+  }
+
+  getSavedRecipes(){
+    let userId:string | null;
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(id=>{
+        userId=id;
+        return this.authService.token;
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http
+          .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`);
+      }),
+      take(1),
+      switchMap((savedRecipesIds:string[])=>{
+        return this.getSavedRecipesByIds(savedRecipesIds);
+      })
+    )
+  }
+
   get recipes() {
     return this._recipes.asObservable();
   }
 
   get myRecipes() {
     return this._myRecipes.asObservable();
+  }
+
+  get savedRecipes() {
+    return this._savedRecipes.asObservable();
   }
 
   addRecipe(newRecipe: Recipe) {
@@ -153,6 +207,23 @@ export class RecipesService {
           .delete(this.API_link + `/recipes/${recipeId}.json?auth=${token}`)
       })
     )
+  }
+
+  saveRecipe(recipeId:string |null | undefined){
+    let userId:string | null;
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap((id, _index) => {
+        userId = id;
+        return this.authService.token
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http
+          .post<any>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`, recipeId);
+      })
+    );
   }
 
 }
