@@ -115,31 +115,6 @@ export class RecipesService {
     return this._myRecipes.asObservable();
   }
 
-
-  // addRecipe(newRecipe: Recipe) {
-  //   return this.authService.userId.pipe(
-  //     take(1),
-  //     switchMap((userId, _index) => {
-  //       newRecipe.userId = userId;
-  //       return this.authService.token
-  //     }),
-  //     take(1),
-  //     switchMap(token => {
-  //       return this.http
-  //         .post<{ name: string }>(this.API_link + `/recipes.json?auth=${token}`, newRecipe)
-  //     }),
-  //     take(1),
-  //     switchMap((resData) => {
-  //       newRecipe.id = resData.name;
-  //       return this.myRecipes;
-  //     }),
-  //     take(1),
-  //     tap((myRecipes: any) => {
-  //       this._myRecipes.next(myRecipes.concat(newRecipe));
-  //     })
-  //   );
-  // }
-
   addRecipe(newRecipe: Recipe) {
     return this.authService.userId.pipe(
       take(1),
