@@ -205,11 +205,30 @@ export class RecipesService {
   }
 
   deleteRecipe(recipeId:string){
+    let userToken:string|null;
     return this.authService.token.pipe(
       take(1),
       switchMap((token, _index)=>{
+        userToken=token;
         return this.http
-          .delete(this.API_link + `/recipes/${recipeId}.json?auth=${token}`)
+          .delete(this.API_link + `/recipes/${recipeId}.json?auth=${userToken}`)
+      }),
+      take(1),
+      switchMap((_deleted, _index)=>{
+        return this.http
+          .get<{[key: string]: string[]}>(this.API_link + `/users.json?auth=${userToken}`);
+      }),
+      take(1),
+      tap((usersWithSavedRecipesJSON)=>{
+        for(var userId in usersWithSavedRecipesJSON){
+          for(var recipeKey in usersWithSavedRecipesJSON[userId]){
+            if(usersWithSavedRecipesJSON[userId][recipeKey]==recipeId){
+              let keyRecipeId = usersWithSavedRecipesJSON[userId][recipeKey];
+              this.http
+              .delete(this.API_link + `/users/${userId}/savedRecipes/${keyRecipeId}.json?auth=${userToken}`);
+            }
+          }
+        }
       })
     )
   }
