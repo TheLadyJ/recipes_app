@@ -8,6 +8,8 @@ import { MyRecipesPageRoutingModule } from './my-recipes-routing.module';
 
 import { MyRecipesPage } from './my-recipes.page';
 import { AddRecipeModalComponent } from './add-recipe-modal/add-recipe-modal.component';
+import { MyRecipesElementComponent } from '../my-recipes-element/my-recipes-element.component';
+import { EditRecipeModalComponent } from './edit-recipe-modal/edit-recipe-modal.component';
 
 @NgModule({
   imports: [
@@ -16,7 +18,7 @@ import { AddRecipeModalComponent } from './add-recipe-modal/add-recipe-modal.com
     IonicModule,
     MyRecipesPageRoutingModule
   ],
-  declarations: [MyRecipesPage, AddRecipeModalComponent],
+  declarations: [MyRecipesPage, AddRecipeModalComponent,MyRecipesElementComponent, EditRecipeModalComponent],
   entryComponents:[AddRecipeModalComponent]
 })
 export class MyRecipesPageModule {}

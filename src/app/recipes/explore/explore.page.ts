@@ -10,7 +10,6 @@ import { RecipesService } from '../recipes.service';
 })
 export class ExplorePage implements OnInit {
 
-
   recipes: Recipe[] | undefined;
   private recipesSub: Subscription | undefined;
 

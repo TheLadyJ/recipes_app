@@ -11,6 +11,9 @@ import { Recipe } from './recipe.model';
 export class RecipesService {
 
   private _recipes = new BehaviorSubject<Recipe[]>([]);
+  private _myRecipes = new BehaviorSubject<Recipe[]>([]);
+
+
   private API_link: string = 'https://mr-recipes-app-default-rtdb.europe-west1.firebasedatabase.app';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -35,17 +38,24 @@ export class RecipesService {
   }
 
   getRecipes() {
-    return this.authService.token.pipe(
+    let userId:string | null;
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(id=>{
+        userId=id;
+        return this.authService.token;
+      }),
       take(1),
       switchMap(token => {
         return this.http
           .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${token}`);
       }),
       map((recipesData: any) => {
-        const recipes: Recipe[] = [];
+        const myRecipes: Recipe[] = [];
         for (const key in recipesData) {
-          if (recipesData.hasOwnProperty(key)) {
-            recipes.push(new Recipe(
+          if (recipesData.hasOwnProperty(key) && recipesData[key].userId != userId) {
+            myRecipes.push(new Recipe(
               key,
               recipesData[key].title,
               recipesData[key].shortDesc,
@@ -54,16 +64,57 @@ export class RecipesService {
               recipesData[key].userId));
           }
         }
-        return recipes;
+        return myRecipes;
       }),
-      tap(recipes => {
-        this._recipes.next(recipes);
-      }))
+      tap(myRecipes => {
+        this._myRecipes.next(myRecipes);
+      })
+    )
+  }
+
+  getMyRecipes() {
+    let userId:string | null;
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(id=>{
+        userId=id;
+        return this.authService.token;
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http
+          .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${token}`);
+      }),
+      map((recipesData: any) => {
+        const myRecipes: Recipe[] = [];
+        for (const key in recipesData) {
+          if (recipesData.hasOwnProperty(key) && recipesData[key].userId == userId) {
+            myRecipes.push(new Recipe(
+              key,
+              recipesData[key].title,
+              recipesData[key].shortDesc,
+              recipesData[key].description,
+              recipesData[key].imageUrl,
+              recipesData[key].userId));
+          }
+        }
+        return myRecipes;
+      }),
+      tap(myRecipes => {
+        this._myRecipes.next(myRecipes);
+      })
+    )
   }
 
   get recipes() {
     return this._recipes.asObservable();
   }
+
+  get myRecipes() {
+    return this._myRecipes.asObservable();
+  }
+
 
   addRecipe(title: string, shortDesc: string, description: string, imageUrl: string) {
     let newRecipe: Recipe = {
