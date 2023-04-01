@@ -21,15 +21,6 @@ export class MyRecipesPage implements OnInit {
     this.myRecipesSub = this.recipesService.myRecipes.subscribe((myRecipes) => {
       this.myRecipes = myRecipes;
     })
-
-    // this.myRecipes=[{
-    //   id:'xxx',
-    //   title:'naslov',
-    //   shortDesc: 'kratki opis',
-    //   description: 'opis',
-    //   imageUrl:'https://www.oetker.rs/Recipe/Recipes/oetker.rs/rs-sr/cakes/image-thumb__158620__RecipeDetail/baron-torta.webp',
-    //   userId:'x'
-    // }];
   }
 
   ionViewWillEnter() {
@@ -50,8 +41,16 @@ export class MyRecipesPage implements OnInit {
       if (resultData.role == 'confirm') {
         console.log(resultData);
         let { title, shortDesc, description, imageUrl } = resultData.data.recipeData;
+        let newRecipe:Recipe={
+          id: null,
+          title,
+          shortDesc,
+          description,
+          imageUrl,
+          userId: null
+        }
         this.recipesService
-          .addRecipe(title, shortDesc, description, imageUrl)
+          .addRecipe(newRecipe)
           .subscribe(res => console.log(res));
       }
     })

@@ -52,10 +52,10 @@ export class RecipesService {
           .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${token}`);
       }),
       map((recipesData: any) => {
-        const myRecipes: Recipe[] = [];
+        const recipes: Recipe[] = [];
         for (const key in recipesData) {
           if (recipesData.hasOwnProperty(key) && recipesData[key].userId != userId) {
-            myRecipes.push(new Recipe(
+            recipes.push(new Recipe(
               key,
               recipesData[key].title,
               recipesData[key].shortDesc,
@@ -64,10 +64,10 @@ export class RecipesService {
               recipesData[key].userId));
           }
         }
-        return myRecipes;
+        return recipes;
       }),
-      tap(myRecipes => {
-        this._myRecipes.next(myRecipes);
+      tap(recipes => {
+        this._recipes.next(recipes);
       })
     )
   }
@@ -116,16 +116,31 @@ export class RecipesService {
   }
 
 
-  addRecipe(title: string, shortDesc: string, description: string, imageUrl: string) {
-    let newRecipe: Recipe = {
-      id: null,
-      title,
-      shortDesc,
-      description,
-      imageUrl,
-      userId: null
-    };
+  // addRecipe(newRecipe: Recipe) {
+  //   return this.authService.userId.pipe(
+  //     take(1),
+  //     switchMap((userId, _index) => {
+  //       newRecipe.userId = userId;
+  //       return this.authService.token
+  //     }),
+  //     take(1),
+  //     switchMap(token => {
+  //       return this.http
+  //         .post<{ name: string }>(this.API_link + `/recipes.json?auth=${token}`, newRecipe)
+  //     }),
+  //     take(1),
+  //     switchMap((resData) => {
+  //       newRecipe.id = resData.name;
+  //       return this.myRecipes;
+  //     }),
+  //     take(1),
+  //     tap((myRecipes: any) => {
+  //       this._myRecipes.next(myRecipes.concat(newRecipe));
+  //     })
+  //   );
+  // }
 
+  addRecipe(newRecipe: Recipe) {
     return this.authService.userId.pipe(
       take(1),
       switchMap((userId, _index) => {
@@ -140,12 +155,38 @@ export class RecipesService {
       take(1),
       switchMap((resData) => {
         newRecipe.id = resData.name;
-        return this.recipes;
+        return this.myRecipes;
       }),
       take(1),
-      tap((recipes: any) => {
-        this._recipes.next(recipes.concat(newRecipe));
+      tap((myRecipes: any) => {
+        this._myRecipes.next(myRecipes.concat(newRecipe));
       })
     );
   }
+
+  editRecipe(recipe:Recipe){
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap((userId, _index) => {
+        recipe.userId = userId;
+        return this.authService.token
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http
+          .put<{ name: string }>(this.API_link + `/recipes/${recipe.id}.json?auth=${token}`, recipe)
+      })
+    );
+  }
+
+  deleteRecipe(recipeId:string){
+    return this.authService.token.pipe(
+      take(1),
+      switchMap((token, _index)=>{
+        return this.http
+          .delete(this.API_link + `/recipes/${recipeId}.json?auth=${token}`)
+      })
+    )
+  }
+
 }

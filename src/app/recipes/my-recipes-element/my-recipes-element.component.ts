@@ -24,7 +24,6 @@ export class MyRecipesElementComponent  implements OnInit {
 
   ngOnInit() {}
 
-  //openEditModal(title: string | null, shortDesc: string | null, description: string | null, imageUrl: string | null) {
   openEditModal(recipeId: string | null) {
     this.modalCtrl.create({
       component: EditRecipeModalComponent,
@@ -38,9 +37,19 @@ export class MyRecipesElementComponent  implements OnInit {
       if (resultData.role == 'confirm') {
         console.log(resultData);
         let { title, shortDesc, description, imageUrl } = resultData.data.recipeData;
+        let recipe:Recipe={
+          id: recipeId,
+          title,
+          shortDesc,
+          description,
+          imageUrl,
+          userId: null
+        }
         this.recipesService
-          .addRecipe(title, shortDesc, description, imageUrl)
-          .subscribe(res => console.log(res));
+          .editRecipe(recipe)
+          .subscribe(()=>{
+            this.recipesService.getMyRecipes().subscribe();
+          });
       }
     })
   }

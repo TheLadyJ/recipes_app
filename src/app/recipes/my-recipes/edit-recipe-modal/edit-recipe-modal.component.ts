@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { RecipesService } from '../../recipes.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class EditRecipeModalComponent implements OnInit {
   @ViewChild('f', { static: true }) form: NgForm | undefined;
   @Input() recipeId: string = "";
 
-  constructor(private modalCtrl: ModalController, private recipesService: RecipesService) { 
+  constructor(private modalCtrl: ModalController, private recipesService: RecipesService, private alertCtrl: AlertController) {
   }
 
   ngOnInit() {
@@ -41,8 +41,38 @@ export class EditRecipeModalComponent implements OnInit {
 
   }
 
-  onDeleteRecipe(){
-    //putem Id-a se brise
+  openAlert(event: any) {
+    console.log(event);
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.alertCtrl.create({
+      header: 'Deliting recipe',
+      message: 'Are you sure you want to delete this recipe?',
+      buttons: [
+        {
+          text: 'Delete',
+          handler: () => {
+            this.onDeleteRecipe();
+            this.modalCtrl.dismiss();
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cacnel',
+          handler: () => {
+            console.log('Deleting canceled.');
+          }
+        }
+      ]
+    }).then((alert) => alert.present());
+  }
+
+
+  private onDeleteRecipe() {
+    this.recipesService.deleteRecipe(this.recipeId).subscribe(() => {
+      this.recipesService.getMyRecipes().subscribe();
+    });
   }
 
 }
