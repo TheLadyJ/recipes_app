@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Recipe } from '../recipe.model';
+import { RecipesService } from '../recipes.service';
 
 @Component({
   selector: 'app-saved',
@@ -7,9 +10,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SavedPage implements OnInit {
 
-  constructor() { }
+  savedRecipes: Recipe[] | undefined;
+  private savedRecipessSub: Subscription | undefined;
+
+  constructor(private recipesService: RecipesService) { }
 
   ngOnInit() {
+    this.savedRecipessSub = this.recipesService.savedRecipes.subscribe((savedRecipes) => {
+      this.savedRecipes = savedRecipes;
+    })
+  }
+
+  ionViewWillEnter() {
+    this.recipesService.getSavedRecipes().subscribe();
+  }
+
+  ngOnDestroy() {
+    this.savedRecipessSub?.unsubscribe();
   }
 
 }

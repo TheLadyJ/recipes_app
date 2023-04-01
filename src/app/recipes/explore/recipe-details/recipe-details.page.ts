@@ -21,7 +21,10 @@ export class RecipeDetailsPage implements OnInit {
     userId: 'xxx'
   };
 
-  constructor(private alertCtrl: AlertController, private route: ActivatedRoute, private recipesService: RecipesService) { }
+  isSaved: boolean = false;
+
+  constructor(private alertCtrl: AlertController, private route: ActivatedRoute, private recipesService: RecipesService) {
+  }
 
 
   ngOnInit() {
@@ -30,9 +33,19 @@ export class RecipeDetailsPage implements OnInit {
         this.recipe = recipe;
       });
     })
+    this.recipesService.isSavedValue.subscribe((isSaved) => {
+      this.isSaved = isSaved;
+    });
+
   }
 
-  openAlert(event: any) {
+  ionViewWillEnter() {
+    this.route.paramMap.subscribe(paramMap => {
+      this.recipesService.isSaved(paramMap.get('recipeId') as string).subscribe();
+    })
+  }
+
+  openAlertForSave(event: any) {
     console.log(event);
     event.stopPropagation();
     event.preventDefault();
@@ -45,8 +58,43 @@ export class RecipeDetailsPage implements OnInit {
           text: 'Save',
           handler: () => {
             console.log('save it');
-            this.recipesService.saveRecipe(this.recipe?.id).subscribe(()=>{
+            this.recipesService.saveRecipe(this.recipe?.id).subscribe(() => {
               this.recipesService.getSavedRecipes();
+              this.route.paramMap.subscribe(paramMap => {
+                this.recipesService.isSaved(paramMap.get('recipeId') as string).subscribe();
+              })
+            });
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cacnel',
+          handler: () => {
+            console.log('do not save it');
+          }
+        }
+      ]
+    }).then((alert) => alert.present());
+  }
+
+  openAlertForRemove(event: any) {
+    console.log(event);
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.alertCtrl.create({
+      header: 'Removing recipe',
+      message: 'Are you sure you want to remove this recipe from saved recipes?',
+      buttons: [
+        {
+          text: 'Remove',
+          handler: () => {
+            console.log('Removed it');
+            this.recipesService.removeFromSaved(this.recipe?.id).subscribe(() => {
+              this.recipesService.getSavedRecipes();
+              this.route.paramMap.subscribe(paramMap => {
+                this.recipesService.isSaved(paramMap.get('recipeId') as string).subscribe();
+              })
             });
           }
         },

@@ -13,6 +13,7 @@ export class RecipesService {
   private _recipes = new BehaviorSubject<Recipe[]>([]);
   private _myRecipes = new BehaviorSubject<Recipe[]>([]);
   private _savedRecipes = new BehaviorSubject<Recipe[]>([]);
+  private _isSaved=new BehaviorSubject<boolean>(false);
 
 
   private API_link: string = 'https://mr-recipes-app-default-rtdb.europe-west1.firebasedatabase.app';
@@ -151,7 +152,11 @@ export class RecipesService {
           .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`);
       }),
       take(1),
-      switchMap((savedRecipesIds:string[])=>{
+      switchMap((savedRecipesIdsJSON)=>{
+        let savedRecipesIds:string[]=[];
+        for(var key in savedRecipesIdsJSON){
+          savedRecipesIds.push(savedRecipesIdsJSON[key]);
+        }
         return this.getSavedRecipesByIds(savedRecipesIds);
       })
     )
@@ -221,7 +226,69 @@ export class RecipesService {
       take(1),
       switchMap(token => {
         return this.http
-          .post<any>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`, recipeId);
+          .post<string>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`, JSON.stringify(recipeId));
+      })
+    );
+  }
+
+  isSaved(recipeId:string|null | undefined){
+    let userId:string | null;
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap((id, _index) => {
+        userId = id;
+        return this.authService.token
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http
+          .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`);
+      }),
+      take(1),
+      switchMap((savedRecipesIdsJSON)=>{
+        for(var key in savedRecipesIdsJSON){
+          if(savedRecipesIdsJSON[key]==recipeId){
+            this._isSaved.next(true);
+            return this.isSavedValue;
+          }
+        }
+        this._isSaved.next(false);
+        return this.isSavedValue;
+      })
+    );
+  }
+
+  get isSavedValue(){
+    return this._isSaved.asObservable();
+  }
+
+  removeFromSaved(recipeId:string|null | undefined){
+    let userId:string | null;
+    let userToken: string|null;
+    let keyRecipeId: string ="";
+    
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap((id, _index) => {
+        userId = id;
+        return this.authService.token
+      }),
+      take(1),
+      switchMap(token => {
+        userToken=token;
+        return this.http
+          .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${userToken}`);
+      }),
+      take(1),
+      switchMap((savedRecipesIdsJSON)=>{
+        for(var key in savedRecipesIdsJSON){
+          if(savedRecipesIdsJSON[key]==recipeId){
+            keyRecipeId=key;
+            break;
+          }
+        }
+        return this.http
+          .delete(this.API_link + `/users/${userId}/savedRecipes/${keyRecipeId}.json?auth=${userToken}`);
       })
     );
   }

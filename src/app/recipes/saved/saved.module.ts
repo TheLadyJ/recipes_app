@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SavedPageRoutingModule } from './saved-routing.module';
 
 import { SavedPage } from './saved.page';
+import { RecipeSavedElementComponent } from '../recipe-saved-element/recipe-saved-element.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { SavedPage } from './saved.page';
     IonicModule,
     SavedPageRoutingModule
   ],
-  declarations: [SavedPage]
+  declarations: [SavedPage, RecipeSavedElementComponent]
 })
 export class SavedPageModule {}

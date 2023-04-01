@@ -8,4 +8,10 @@
 
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+
+  <ion-list>
+    <app-recipe-saved-element *ngFor="let savedRecipe of savedRecipes" [recipe]="savedRecipe"></app-recipe-saved-element>
+  </ion-list>
+
+</ion-content>

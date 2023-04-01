@@ -5,8 +5,13 @@
       </ion-back-button>
     </ion-buttons>
     <ion-title>{{recipe?.title}}</ion-title>
-    <ion-icon class="ion-padding-end" size="large" name="bookmark-outline" color="bookmark" slot="end"
-      (click)="openAlert($event)"></ion-icon>
+
+    <ion-icon *ngIf="isSaved==true" class="ion-padding-end" size="large" name="bookmark" color="bookmark" slot="end"
+      (click)="openAlertForRemove($event)"></ion-icon>
+
+    <ion-icon *ngIf="isSaved==false" class="ion-padding-end" size="large" name="bookmark-outline" color="bookmark" slot="end"
+      (click)="openAlertForSave($event)"></ion-icon>
+
   </ion-toolbar>
 </ion-header>
 
