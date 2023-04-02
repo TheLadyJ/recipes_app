@@ -23,7 +23,12 @@ const routes: Routes = [
   },
   {
     path: 'theme-settings',
-    loadChildren: () => import('./theme-settings/theme-settings.module').then( m => m.ThemeSettingsPageModule)
+    loadChildren: () => import('./theme-settings/theme-settings.module').then( m => m.ThemeSettingsPageModule),
+    canLoad: [AuthGuard]
+  },
+  {
+    path: 'user-details',
+    loadChildren: () => import('./user-details/user-details.module').then( m => m.UserDetailsPageModule)
   },
 ];
 

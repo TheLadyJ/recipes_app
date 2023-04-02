@@ -13,7 +13,7 @@ export class RecipesService {
   private _recipes = new BehaviorSubject<Recipe[]>([]);
   private _myRecipes = new BehaviorSubject<Recipe[]>([]);
   private _savedRecipes = new BehaviorSubject<Recipe[]>([]);
-  private _isSaved=new BehaviorSubject<boolean>(false);
+  private _isSaved = new BehaviorSubject<boolean>(false);
 
 
   private API_link: string = 'https://mr-recipes-app-default-rtdb.europe-west1.firebasedatabase.app';
@@ -40,12 +40,12 @@ export class RecipesService {
   }
 
   getRecipes() {
-    let userId:string | null;
+    let userId: string | null;
 
     return this.authService.userId.pipe(
       take(1),
-      switchMap(id=>{
-        userId=id;
+      switchMap(id => {
+        userId = id;
         return this.authService.token;
       }),
       take(1),
@@ -75,12 +75,12 @@ export class RecipesService {
   }
 
   getMyRecipes() {
-    let userId:string | null;
+    let userId: string | null;
 
     return this.authService.userId.pipe(
       take(1),
-      switchMap(id=>{
-        userId=id;
+      switchMap(id => {
+        userId = id;
         return this.authService.token;
       }),
       take(1),
@@ -109,7 +109,7 @@ export class RecipesService {
     )
   }
 
-  private getSavedRecipesByIds(savedRecipeIds:string[]){
+  private getSavedRecipesByIds(savedRecipeIds: string[]) {
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
@@ -137,13 +137,13 @@ export class RecipesService {
     )
   }
 
-  getSavedRecipes(){
-    let userId:string | null;
+  getSavedRecipes() {
+    let userId: string | null;
 
     return this.authService.userId.pipe(
       take(1),
-      switchMap(id=>{
-        userId=id;
+      switchMap(id => {
+        userId = id;
         return this.authService.token;
       }),
       take(1),
@@ -152,9 +152,9 @@ export class RecipesService {
           .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`);
       }),
       take(1),
-      switchMap((savedRecipesIdsJSON)=>{
-        let savedRecipesIds:string[]=[];
-        for(var key in savedRecipesIdsJSON){
+      switchMap((savedRecipesIdsJSON) => {
+        let savedRecipesIds: string[] = [];
+        for (var key in savedRecipesIdsJSON) {
           savedRecipesIds.push(savedRecipesIdsJSON[key]);
         }
         return this.getSavedRecipesByIds(savedRecipesIds);
@@ -189,7 +189,7 @@ export class RecipesService {
     );
   }
 
-  editRecipe(recipe:Recipe){
+  editRecipe(recipe: Recipe) {
     return this.authService.userId.pipe(
       take(1),
       switchMap((userId, _index) => {
@@ -204,28 +204,28 @@ export class RecipesService {
     );
   }
 
-  deleteRecipe(recipeId:string){
-    let userToken:string|null;
+  deleteRecipe(recipeId: string) {
+    let userToken: string | null;
     return this.authService.token.pipe(
       take(1),
-      switchMap((token, _index)=>{
-        userToken=token;
+      switchMap((token, _index) => {
+        userToken = token;
         return this.http
           .delete(this.API_link + `/recipes/${recipeId}.json?auth=${userToken}`)
       }),
       take(1),
-      switchMap((_deleted, _index)=>{
+      switchMap((_deleted, _index) => {
         return this.http
-          .get<{[key: string]: string[]}>(this.API_link + `/users.json?auth=${userToken}`);
+          .get<{ [key: string]: string[] }>(this.API_link + `/users.json?auth=${userToken}`);
       }),
       take(1),
-      tap((usersWithSavedRecipesJSON)=>{
-        for(var userId in usersWithSavedRecipesJSON){
-          for(var recipeKey in usersWithSavedRecipesJSON[userId]){
-            if(usersWithSavedRecipesJSON[userId][recipeKey]==recipeId){
+      tap((usersWithSavedRecipesJSON) => {
+        for (var userId in usersWithSavedRecipesJSON) {
+          for (var recipeKey in usersWithSavedRecipesJSON[userId]) {
+            if (usersWithSavedRecipesJSON[userId][recipeKey] == recipeId) {
               let keyRecipeId = usersWithSavedRecipesJSON[userId][recipeKey];
               this.http
-              .delete(this.API_link + `/users/${userId}/savedRecipes/${keyRecipeId}.json?auth=${userToken}`);
+                .delete(this.API_link + `/users/${userId}/savedRecipes/${keyRecipeId}.json?auth=${userToken}`);
             }
           }
         }
@@ -233,8 +233,8 @@ export class RecipesService {
     )
   }
 
-  saveRecipe(recipeId:string |null | undefined){
-    let userId:string | null;
+  saveRecipe(recipeId: string | null | undefined) {
+    let userId: string | null;
 
     return this.authService.userId.pipe(
       take(1),
@@ -250,8 +250,8 @@ export class RecipesService {
     );
   }
 
-  isSaved(recipeId:string|null | undefined){
-    let userId:string | null;
+  isSaved(recipeId: string | null | undefined) {
+    let userId: string | null;
     return this.authService.userId.pipe(
       take(1),
       switchMap((id, _index) => {
@@ -264,9 +264,9 @@ export class RecipesService {
           .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${token}`);
       }),
       take(1),
-      switchMap((savedRecipesIdsJSON)=>{
-        for(var key in savedRecipesIdsJSON){
-          if(savedRecipesIdsJSON[key]==recipeId){
+      switchMap((savedRecipesIdsJSON) => {
+        for (var key in savedRecipesIdsJSON) {
+          if (savedRecipesIdsJSON[key] == recipeId) {
             this._isSaved.next(true);
             return this.isSavedValue;
           }
@@ -277,15 +277,15 @@ export class RecipesService {
     );
   }
 
-  get isSavedValue(){
+  get isSavedValue() {
     return this._isSaved.asObservable();
   }
 
-  removeFromSaved(recipeId:string|null | undefined){
-    let userId:string | null;
-    let userToken: string|null;
-    let keyRecipeId: string ="";
-    
+  removeFromSaved(recipeId: string | null | undefined) {
+    let userId: string | null;
+    let userToken: string | null;
+    let keyRecipeId: string = "";
+
     return this.authService.userId.pipe(
       take(1),
       switchMap((id, _index) => {
@@ -294,20 +294,51 @@ export class RecipesService {
       }),
       take(1),
       switchMap(token => {
-        userToken=token;
+        userToken = token;
         return this.http
           .get<string[]>(this.API_link + `/users/${userId}/savedRecipes.json?auth=${userToken}`);
       }),
       take(1),
-      switchMap((savedRecipesIdsJSON)=>{
-        for(var key in savedRecipesIdsJSON){
-          if(savedRecipesIdsJSON[key]==recipeId){
-            keyRecipeId=key;
+      switchMap((savedRecipesIdsJSON) => {
+        for (var key in savedRecipesIdsJSON) {
+          if (savedRecipesIdsJSON[key] == recipeId) {
+            keyRecipeId = key;
             break;
           }
         }
         return this.http
           .delete(this.API_link + `/users/${userId}/savedRecipes/${keyRecipeId}.json?auth=${userToken}`);
+      })
+    );
+  }
+
+  deleteUserRecipes() {
+    let userId: string | null;
+    let userToken: string | null;
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap((id, _index) => {
+        userId = id;
+        return this.authService.token
+      }),
+      take(1),
+      switchMap(token => {
+        userToken = token
+        return this.http
+          .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${userToken}`)
+      }),
+      map((recipesData: any) => {
+        for (const key in recipesData) {
+          if (recipesData.hasOwnProperty(key) && recipesData[key].userId == userId) {
+            //brise se sa liste svih recepata i kod liste sacuvanih ako postoji negde
+            this.deleteRecipe(key)
+          }
+        }
+
+        //Brisu se svi korisnikovi sacuvani recepti
+        this.http
+          .delete(this.API_link + `/users/${userId}.json?auth=${userToken}`);
       })
     );
   }

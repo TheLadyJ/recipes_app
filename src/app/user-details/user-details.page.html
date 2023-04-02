@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button color="bookmark"></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title>My profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <!-- <ion-icon name="at-outline"></ion-icon> -->
+      <ion-label>Email address:</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-col size="8">
+      <ion-input value="jovana.vida@gmail.com" [disabled]="true"></ion-input>
+
+      </ion-col>
+      <ion-col size="4">
+        <ion-button type="button" color="primary" shape="round" style="font-weight: bold; " (click)="onEditEmail()">
+          Edit
+          <ion-icon style="padding-left: 8px;" name="pencil-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+      
+    </ion-item>
+  </ion-list>
+
+
+  <!-- <ion-grid fixed>
+    <ion-row>
+      <ion-col size="10" offset="1">
+        <ion-row>
+          <ion-item>
+            <ion-label>
+              Email address:
+            </ion-label>
+          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-item>
+            <ion-label class="class=mbsc-italic" >
+              jovana.vida@gmail.com
+            </ion-label>
+          </ion-item>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid> -->
+</ion-content>

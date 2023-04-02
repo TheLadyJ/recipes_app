@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map, tap } from 'rxjs';
+import { BehaviorSubject, map, switchMap, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { RecipesService } from '../recipes/recipes.service';
 import { User } from './user.model';
 
 
@@ -14,6 +15,32 @@ interface AuthResponseData {
   localId: string;
   expresIn: string;
   registered?: boolean;
+}
+
+interface ChangeDetailsResponseData {
+  localId: string,
+  email: string,
+  passwordHash: string,
+  providerUserInfo: Object[],
+  idToken: string,
+  refreshToken: string,
+  expiresIn: string
+}
+
+interface GetUserResponseData {
+  localId: string,
+  email: string,
+  emailVerified: boolean,
+  displayName: string,
+  providerUserInfo: Object[],
+  photoUrl: string,
+  passwordHash: string,
+  passwordUpdatedAt: number,
+  validSince: string,
+  disabled: boolean,
+  lastLoginAt: string,
+  createdAt: string,
+  customAuth: boolean
 }
 
 interface UserData {
@@ -63,6 +90,51 @@ export class AuthService {
           this._user.next(user);
         })
       );
+  }
+
+  getUser() {
+    let token = this.token;
+
+    return this.http.post<GetUserResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${environment.firebaseAPIKey}`,
+      {
+        idToken: token
+      })
+  }
+
+  changeEmail(newEmail: string) {
+    let token = this.token;
+
+    return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
+      {
+        idToken: token,
+        email: newEmail,
+        returnSecureToken: false
+      })
+  }
+
+  changePassword(newPassword: string) {
+    let token = this.token;
+
+    return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
+      {
+        idToken: token,
+        password: newPassword,
+        returnSecureToken: false
+      })
+  }
+
+  deleteUser() {
+    let token = this.token;
+
+    return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${environment.firebaseAPIKey}`,
+      {
+        idToken: token
+      }).pipe(
+        tap(() => {
+          this.logout()
+        })
+      )
+
   }
 
   logout() {
