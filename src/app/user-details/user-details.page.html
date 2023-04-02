@@ -11,22 +11,65 @@
 <ion-content>
   <ion-list>
     <ion-item>
-      <!-- <ion-icon name="at-outline"></ion-icon> -->
-      <ion-label>Email address:</ion-label>
+      <ion-label style="font-size: large;">Email address</ion-label>
     </ion-item>
-    <ion-item>
-      <ion-col size="8">
-      <ion-input value="jovana.vida@gmail.com" [disabled]="true"></ion-input>
 
+    <ion-row>
+      <ion-col size="7" offset="1">
+        <ion-input [disabled]="!editEmail" [(ngModel)]="email"></ion-input>
       </ion-col>
       <ion-col size="4">
-        <ion-button type="button" color="primary" shape="round" style="font-weight: bold; " (click)="onEditEmail()">
+        <ion-button *ngIf="editEmail==false" size="small" type="button" color="primary" shape="round"
+          style="font-weight: bold;" (click)="onEditEmail()">
           Edit
           <ion-icon style="padding-left: 8px;" name="pencil-outline"></ion-icon>
         </ion-button>
+
+        <ion-button *ngIf="editEmail==true" size="small" type="submit" color="primary"
+          shape="round" style="font-weight: bold;" (click)="onSaveEmail()">
+          Save
+          <ion-icon style="padding-left: 8px;" name="checkmark"></ion-icon>
+        </ion-button>
       </ion-col>
-      
+
+    </ion-row>
+
+
+    <ion-item></ion-item>
+
+    <ion-item>
+      <ion-label style="font-size: large;">Password</ion-label>
+      <ion-row>
+        <ion-col size="1">
+        </ion-col>
+        <ion-col size="4">
+          <ion-button size="small" type="button" color="primary" shape="round" style="font-weight: bold;"
+            (click)="onChangePassword()">
+            Change
+            <ion-icon style="padding-left: 8px;" name="key"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
     </ion-item>
+
+    <ion-item></ion-item>
+
+    <ion-item>
+      <ion-label style="font-size: large;">Delete account</ion-label>
+      <ion-row>
+        <ion-col size="1">
+        </ion-col>
+        <ion-col size="4">
+          <ion-button size="small" type="button" color="danger" shape="round" style="font-weight: bold;"
+            (click)="onChangePassword()">
+            Delete
+            <ion-icon style="padding-left: 8px;" name="trash"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+
   </ion-list>
 
 
