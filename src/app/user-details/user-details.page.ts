@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { RecipesService } from '../recipes/recipes.service';
 
 @Component({
   selector: 'app-user-details',
@@ -8,13 +9,38 @@ import { AuthService } from '../auth/auth.service';
 })
 export class UserDetailsPage implements OnInit {
 
-  constructor(private authService:AuthService) { }
+  static editEmail:boolean=false;
+  email:string="poslati email";
+  private oldEmail:string="";
+
+  constructor(private authService:AuthService, private recipesService: RecipesService) { }
 
   ngOnInit() {
   }
 
   onEditEmail(){
-    
+    UserDetailsPage.editEmail=true;
+    this.oldEmail=this.email;
+  }
+  
+  onSaveEmail(){
+    UserDetailsPage.editEmail=false;
+
+    if(this.email=='123'){
+      alert('Hii');
+    }
+    else{
+      alert('No');
+      //this.email=this.oldEmail;
+    }
   }
 
+  onChangePassword(){
+
+  }
+
+
+  get editEmail(){
+    return UserDetailsPage.editEmail;
+  }
 }
