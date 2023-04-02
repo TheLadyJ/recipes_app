@@ -35,7 +35,6 @@ export class MyRecipesElementComponent  implements OnInit {
       return modal.onDidDismiss();
     }).then((resultData) => {
       if (resultData.role == 'confirm') {
-        console.log(resultData);
         let { title, shortDesc, description, imageUrl } = resultData.data.recipeData;
         let recipe:Recipe={
           id: recipeId,

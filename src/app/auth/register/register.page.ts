@@ -62,10 +62,9 @@ export class RegisterPage implements OnInit {
         loadingEl.present();
         
         this.authService.register(this.registerForm.value).subscribe(resData => {
-          console.log('Successful registration');
-          console.log(resData);
           this.router.navigateByUrl('/recipes');
           loadingEl.dismiss();
+          this.registerForm.reset();
         },
           async error => {         
             let message: string = this.getErrorMessage(error.error.error.message);

@@ -37,9 +37,9 @@ export class LogInPage implements OnInit {
     this.isLoading = true;
     
     this.authService.login(this.logInForm.value).subscribe(resData => {
-      console.log('Successful logging in');
       this.isLoading = false;
       this.router.navigateByUrl('/recipes');
+      this.logInForm.reset();
     },
       async error => {
         console.log("Error cought:");

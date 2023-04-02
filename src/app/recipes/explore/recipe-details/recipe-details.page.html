@@ -1,16 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/recipes/tabs/explore">
+      <ion-back-button color="bookmark" defaultHref="/recipes/tabs/explore">
       </ion-back-button>
     </ion-buttons>
     <ion-title>{{recipe?.title}}</ion-title>
 
     <ion-icon *ngIf="isSaved==true" class="ion-padding-end" size="large" name="bookmark" color="bookmark" slot="end"
-      (click)="openAlertForRemove($event)"></ion-icon>
+      (click)="openAlertForRemove()"></ion-icon>
 
     <ion-icon *ngIf="isSaved==false" class="ion-padding-end" size="large" name="bookmark-outline" color="bookmark" slot="end"
-      (click)="openAlertForSave($event)"></ion-icon>
+      (click)="openAlertForSave()"></ion-icon>
 
   </ion-toolbar>
 </ion-header>

@@ -41,17 +41,15 @@ export class EditRecipeModalComponent implements OnInit {
 
   }
 
-  openAlert(event: any) {
-    console.log(event);
-    event.stopPropagation();
-    event.preventDefault();
-
+  openAlert() {
     this.alertCtrl.create({
       header: 'Deliting recipe',
       message: 'Are you sure you want to delete this recipe?',
+      cssClass: 'buttonCss',
       buttons: [
         {
           text: 'Delete',
+          cssClass: 'delete-button',
           handler: () => {
             this.onDeleteRecipe();
             this.modalCtrl.dismiss();
@@ -60,6 +58,7 @@ export class EditRecipeModalComponent implements OnInit {
         {
           text: 'Cancel',
           role: 'cacnel',
+          cssClass: 'cancel-button',
           handler: () => {
             console.log('Deleting canceled.');
           }

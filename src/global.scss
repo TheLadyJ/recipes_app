@@ -34,3 +34,18 @@
     --ion-color-shade: var(--ion-color-bookmark-shade);
     --ion-color-tint: var(--ion-color-bookmark-tint);
   }
+
+
+  .buttonCss {
+    button.alert-button.save-button{
+      color: green;
+    }
+
+    button.alert-button.delete-button, button.alert-button.remove-button{
+      color: red;
+    }
+
+    button.alert-button.cancel-button{
+      color: var(--ion-color-bookmark);
+    }
+}

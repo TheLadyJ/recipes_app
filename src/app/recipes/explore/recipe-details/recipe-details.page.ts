@@ -45,19 +45,16 @@ export class RecipeDetailsPage implements OnInit {
     })
   }
 
-  openAlertForSave(event: any) {
-    console.log(event);
-    event.stopPropagation();
-    event.preventDefault();
-
+  openAlertForSave() {
     this.alertCtrl.create({
       header: 'Saving recipe',
       message: 'Are you sure you want to save this recipe?',
+      cssClass:'buttonCss',
       buttons: [
         {
           text: 'Save',
+          cssClass: 'save-button',
           handler: () => {
-            console.log('save it');
             this.recipesService.saveRecipe(this.recipe?.id).subscribe(() => {
               this.recipesService.getSavedRecipes();
               this.route.paramMap.subscribe(paramMap => {
@@ -69,27 +66,25 @@ export class RecipeDetailsPage implements OnInit {
         {
           text: 'Cancel',
           role: 'cacnel',
+          cssClass: 'cancel-button',
           handler: () => {
-            console.log('do not save it');
+            console.log('Saving canceled.');
           }
         }
       ]
     }).then((alert) => alert.present());
   }
 
-  openAlertForRemove(event: any) {
-    console.log(event);
-    event.stopPropagation();
-    event.preventDefault();
-
+  openAlertForRemove() {
     this.alertCtrl.create({
       header: 'Removing recipe',
       message: 'Are you sure you want to remove this recipe from saved recipes?',
+      cssClass:'buttonCss',
       buttons: [
         {
           text: 'Remove',
+          cssClass: 'remove-button',
           handler: () => {
-            console.log('Removed it');
             this.recipesService.removeFromSaved(this.recipe?.id).subscribe(() => {
               this.recipesService.getSavedRecipes();
               this.route.paramMap.subscribe(paramMap => {
@@ -101,8 +96,9 @@ export class RecipeDetailsPage implements OnInit {
         {
           text: 'Cancel',
           role: 'cacnel',
+          cssClass: 'cancel-button',
           handler: () => {
-            console.log('do not save it');
+            console.log('Removing canceled.');
           }
         }
       ]
