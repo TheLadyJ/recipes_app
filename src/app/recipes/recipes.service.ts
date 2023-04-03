@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, concat, map, switchMap, take, tap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Recipe } from './recipe.model';
 
@@ -205,8 +205,6 @@ export class RecipesService {
   }
 
   deleteRecipe(recipeId: string | null) {
-    console.log('LOOOOKKKK '+ recipeId)
-
     let userToken: string | null;
     return this.authService.token.pipe(
       take(1),
@@ -219,24 +217,27 @@ export class RecipesService {
       take(1),
       switchMap((_deleted, _index) => {
         return this.http
-          .get<{ [key: string]: {'savedRecipes': string[]} }>(this.API_link + `/users.json?auth=${userToken}`);
+          .get<{ [key: string]: { 'savedRecipes': string[] } }>(this.API_link + `/users.json?auth=${userToken}`);
       }),
       take(1),
       tap((usersWithSavedRecipesJSON) => {
-        console.log('brisanje u saved kod svih korisnika')
-        console.log(usersWithSavedRecipesJSON)
+        let requestsToExecute= [];
+        //Gathering all request that need to be executed in order for this recipe to be deleted as saved for other users  
         for (var userId in usersWithSavedRecipesJSON) {
-          console.log('user being searched '+userId)
+          //In all saved racipes of another user..
           for (var recipeKey in usersWithSavedRecipesJSON[userId].savedRecipes) {
-            console.log(recipeKey)
+            //Checking if they have this recipe as saved
             if (usersWithSavedRecipesJSON[userId].savedRecipes[recipeKey] == recipeId) {
-              console.log('to delete by this recipeIdKEY'+ recipeKey)
-              this.http
-                .delete(this.API_link + `/users/${userId}/savedRecipes/${recipeKey}?auth=${userToken}`);
+              //Adding request which will delete it to an array
+              requestsToExecute.push(this.http
+                .delete(this.API_link + `/users/${userId}/savedRecipes/${recipeKey}.json?auth=${userToken}`));
               break;
             }
           }
         }
+
+        //Executing all request that need to be executed in order for this recipe to be deleted as saved for other users 
+        concat(...requestsToExecute).subscribe();
       })
     )
   }
