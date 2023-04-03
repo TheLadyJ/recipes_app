@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, map, switchMap, take, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { RecipesService } from '../recipes/recipes.service';
 import { User } from './user.model';
@@ -13,7 +13,7 @@ interface AuthResponseData {
   email: string;
   refreshToken: string;
   localId: string;
-  expresIn: string;
+  expiresIn: string;
   registered?: boolean;
 }
 
@@ -69,7 +69,7 @@ export class AuthService {
       })
       .pipe(
         tap(userData => {
-          const expirationTime = new Date(new Date().getTime + userData.expresIn);
+          const expirationTime = new Date(new Date().getTime + userData.expiresIn);
           const user = new User(userData.localId, userData.email, userData.idToken, expirationTime);
           this._user.next(user);
         })
@@ -85,7 +85,7 @@ export class AuthService {
       })
       .pipe(
         tap(userData => {
-          const expirationTime = new Date(new Date().getTime + userData.expresIn);
+          const expirationTime = new Date(new Date().getTime + userData.expiresIn);
           const user = new User(userData.localId, userData.email, userData.idToken, expirationTime);
           this._user.next(user);
         })
@@ -102,39 +102,56 @@ export class AuthService {
   }
 
   changeEmail(newEmail: string) {
-    let token = this.token;
-
-    return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
-      {
-        idToken: token,
-        email: newEmail,
-        returnSecureToken: false
+    return this.token.pipe(
+      switchMap(token => {
+        return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
+          {
+            idToken: token,
+            email: newEmail,
+            returnSecureToken: true
+          })
+      }),
+      take(1),
+      tap(userData => {
+        const expirationTime = new Date(new Date().getTime + userData.expiresIn);
+        const user = new User(userData.localId, userData.email, userData.idToken, expirationTime);
+        this._user.next(user);
       })
+    )
   }
 
   changePassword(newPassword: string) {
-    let token = this.token;
-
-    return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
-      {
-        idToken: token,
-        password: newPassword,
-        returnSecureToken: false
+    return this.token.pipe(
+      switchMap(token => {
+        return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
+          {
+            idToken: token,
+            password: newPassword,
+            returnSecureToken: true
+          })
+      }),
+      take(1),
+      tap(userData => {
+        const expirationTime = new Date(new Date().getTime + userData.expiresIn);
+        const user = new User(userData.localId, userData.email, userData.idToken, expirationTime);
+        this._user.next(user);
       })
+    )
   }
 
-  deleteUser() {
-    let token = this.token;
-
-    return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${environment.firebaseAPIKey}`,
-      {
-        idToken: token
-      }).pipe(
-        tap(() => {
-          this.logout()
-        })
-      )
-
+  deleteAccount() {
+    return this.token.pipe(
+      switchMap(token => {
+        return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${environment.firebaseAPIKey}`,
+          {
+            idToken: token
+          })
+      }),
+      take(1),
+      tap(() => {
+        this.logout()
+      })
+    )
   }
 
   logout() {

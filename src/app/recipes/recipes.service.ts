@@ -204,28 +204,36 @@ export class RecipesService {
     );
   }
 
-  deleteRecipe(recipeId: string) {
+  deleteRecipe(recipeId: string | null) {
+    console.log('LOOOOKKKK '+ recipeId)
+
     let userToken: string | null;
     return this.authService.token.pipe(
       take(1),
       switchMap((token, _index) => {
         userToken = token;
+        //brise recept sa liste svih recepata
         return this.http
           .delete(this.API_link + `/recipes/${recipeId}.json?auth=${userToken}`)
       }),
       take(1),
       switchMap((_deleted, _index) => {
         return this.http
-          .get<{ [key: string]: string[] }>(this.API_link + `/users.json?auth=${userToken}`);
+          .get<{ [key: string]: {'savedRecipes': string[]} }>(this.API_link + `/users.json?auth=${userToken}`);
       }),
       take(1),
       tap((usersWithSavedRecipesJSON) => {
+        console.log('brisanje u saved kod svih korisnika')
+        console.log(usersWithSavedRecipesJSON)
         for (var userId in usersWithSavedRecipesJSON) {
-          for (var recipeKey in usersWithSavedRecipesJSON[userId]) {
-            if (usersWithSavedRecipesJSON[userId][recipeKey] == recipeId) {
-              let keyRecipeId = usersWithSavedRecipesJSON[userId][recipeKey];
+          console.log('user being searched '+userId)
+          for (var recipeKey in usersWithSavedRecipesJSON[userId].savedRecipes) {
+            console.log(recipeKey)
+            if (usersWithSavedRecipesJSON[userId].savedRecipes[recipeKey] == recipeId) {
+              console.log('to delete by this recipeIdKEY'+ recipeKey)
               this.http
-                .delete(this.API_link + `/users/${userId}/savedRecipes/${keyRecipeId}.json?auth=${userToken}`);
+                .delete(this.API_link + `/users/${userId}/savedRecipes/${recipeKey}?auth=${userToken}`);
+              break;
             }
           }
         }
@@ -328,19 +336,34 @@ export class RecipesService {
         return this.http
           .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${userToken}`)
       }),
-      map((recipesData: any) => {
+      take(1),
+      tap((recipesData: any) => {
         for (const key in recipesData) {
+          //pronalaze se recepti korisnika
           if (recipesData.hasOwnProperty(key) && recipesData[key].userId == userId) {
             //brise se sa liste svih recepata i kod liste sacuvanih ako postoji negde
             this.deleteRecipe(key)
           }
         }
-
-        //Brisu se svi korisnikovi sacuvani recepti
-        this.http
-          .delete(this.API_link + `/users/${userId}.json?auth=${userToken}`);
       })
     );
+  }
+
+  deleteAllSavedRecipes() {
+    let userId: string | null;
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap((id, _index) => {
+        userId = id;
+        return this.authService.token
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http
+          .delete(this.API_link + `/users/${userId}.json?auth=${token}`);
+      })
+    )
   }
 
 }

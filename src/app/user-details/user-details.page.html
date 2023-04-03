@@ -15,17 +15,19 @@
     </ion-item>
 
     <ion-row>
-      <ion-col size="7" offset="1">
+      <ion-col size="6" offset="" style="padding-left: 20px;">
         <ion-input [disabled]="!editEmail" [(ngModel)]="email"></ion-input>
       </ion-col>
-      <ion-col size="4">
-        <ion-button *ngIf="editEmail==false" size="small" type="button" color="primary" shape="round"
-          style="font-weight: bold;" (click)="onEditEmail()">
-          Edit
+      <ion-col size="1" offset="1" *ngIf="editEmail==false" style="padding-left: 15px;">
+        <ion-button  size="small" type="button" color="primary" shape="round"
+          style="font-weight: bold;" (click)="onChangeEmail()">
+          Change
           <ion-icon style="padding-left: 8px;" name="pencil-outline"></ion-icon>
         </ion-button>
+      </ion-col>
 
-        <ion-button *ngIf="editEmail==true" size="small" type="submit" color="primary"
+      <ion-col size="1" offset="1" *ngIf="editEmail==true" style="padding-left: 30px;">
+        <ion-button  size="small" type="submit" color="primary"
           shape="round" style="font-weight: bold;" (click)="onSaveEmail()">
           Save
           <ion-icon style="padding-left: 8px;" name="checkmark"></ion-icon>
@@ -42,7 +44,7 @@
       <ion-row>
         <ion-col size="1">
         </ion-col>
-        <ion-col size="4">
+        <ion-col size="4" *ngIf="editPassword==false">
           <ion-button size="small" type="button" color="primary" shape="round" style="font-weight: bold;"
             (click)="onChangePassword()">
             Change
@@ -51,6 +53,26 @@
         </ion-col>
       </ion-row>
     </ion-item>
+
+    <ion-item *ngIf="editPassword==true">
+      <ion-label position="floating" color="bookmark">New password:</ion-label>
+      <ion-input type="password" [(ngModel)]="newPassword"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="editPassword==true">
+      <ion-label position="floating" color="bookmark">Confirm new password:</ion-label>
+      <ion-input type="password" [(ngModel)]="confirmNewPassword"></ion-input>
+    </ion-item>
+
+    <ion-row *ngIf="editPassword==true" style="padding-right: 8px;">
+      <ion-col size="1" offset="8">
+        <ion-button size="small" type="button" color="primary" shape="round" style="font-weight: bold;"
+          (click)="onSavePassword()">
+          Save
+          <ion-icon style="padding-left: 8px;" name="checkmark"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    
 
     <ion-item></ion-item>
 
@@ -61,7 +83,7 @@
         </ion-col>
         <ion-col size="4">
           <ion-button size="small" type="button" color="danger" shape="round" style="font-weight: bold;"
-            (click)="onChangePassword()">
+            (click)="onDeleteAccountAlert()">
             Delete
             <ion-icon style="padding-left: 8px;" name="trash"></ion-icon>
           </ion-button>
