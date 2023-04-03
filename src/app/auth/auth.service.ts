@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, map, switchMap, take, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { RecipesService } from '../recipes/recipes.service';
 import { User } from './user.model';
 
 
@@ -93,17 +92,22 @@ export class AuthService {
   }
 
   getUser() {
-    let token = this.token;
-
-    return this.http.post<GetUserResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${environment.firebaseAPIKey}`,
-      {
-        idToken: token
+    return this.token.pipe(
+      switchMap(token=>{
+        return this.http.post<any>(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${environment.firebaseAPIKey}`,
+        {
+          idToken: token
+        })
       })
+    )
+    
   }
 
   changeEmail(newEmail: string) {
     return this.token.pipe(
       switchMap(token => {
+        console.log('TOKEN: ' + this.token)
+
         return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
           {
             idToken: token,

@@ -12,23 +12,24 @@ export class UserDetailsPage implements OnInit {
 
   static changeEmail: boolean = false;
   static changePassword: boolean = false;
-  email: string = "poslati email";
+  email: string = "";
   private oldEmail: string = "";
   newPassword: string = "";
   confirmNewPassword: string = "";
 
 
-  constructor(private authService: AuthService, private recipesService: RecipesService, private alertCtrl: AlertController) { }
-
-  ngOnInit() {
-    let myRecipes;
-    this.recipesService.getMyRecipes().subscribe(recipes => {
-      myRecipes = recipes;
-      for (var recipe in myRecipes) {
-        console.log(myRecipes[recipe].id)
-      }
+  constructor(private authService: AuthService, private recipesService: RecipesService, private alertCtrl: AlertController) {
+    this.authService.getUser().subscribe(res => {
+      console.log('Before ' + this.email)
+      this.email = res.users[0].email;
+      console.log('After ' + this.email)
     })
   }
+
+  ngOnInit() {
+  }
+
+
 
   onChangeEmail() {
     UserDetailsPage.changeEmail = true;
@@ -37,30 +38,32 @@ export class UserDetailsPage implements OnInit {
 
 
   onSaveEmail() {
-    this.authService.changeEmail(this.email).subscribe(resData => {
-      this.oldEmail = this.email;
+    if (this.email != this.oldEmail) {
+      this.authService.changeEmail(this.email).subscribe(resData => {
+        this.oldEmail = this.email;
 
-      this.alertCtrl.create({
-        header: 'Success!',
-        message: 'Email was successfuly changed.',
-        buttons: ['OK'],
-      }).then(alert => {
-        alert.present();
-      });
-    },
-      error => {
-        this.email = this.oldEmail;
-
-        let message: string = this.getErrorMessageForEmail(error.error.error.message);
         this.alertCtrl.create({
-          header: 'Problem with changing email',
-          message,
+          header: 'Success!',
+          message: 'Email was successfuly changed.',
           buttons: ['OK'],
         }).then(alert => {
           alert.present();
         });
-      }
-    );
+      },
+        error => {
+          this.email = this.oldEmail;
+
+          let message: string = this.getErrorMessageForEmail(error.error.error.message);
+          this.alertCtrl.create({
+            header: 'Problem with changing email',
+            message,
+            buttons: ['OK'],
+          }).then(alert => {
+            alert.present();
+          });
+        }
+      );
+    }
 
     UserDetailsPage.changeEmail = false;
   }

@@ -15,10 +15,10 @@
     </ion-item>
 
     <ion-row>
-      <ion-col size="6" offset="" style="padding-left: 20px;">
+      <ion-col size="7" offset="" style="padding-left: 20px;">
         <ion-input [disabled]="!editEmail" [(ngModel)]="email"></ion-input>
       </ion-col>
-      <ion-col size="1" offset="1" *ngIf="editEmail==false" style="padding-left: 15px;">
+      <ion-col size="1" offset="0" *ngIf="editEmail==false" style="padding-left: 15px;">
         <ion-button  size="small" type="button" color="primary" shape="round"
           style="font-weight: bold;" (click)="onChangeEmail()">
           Change
@@ -26,7 +26,7 @@
         </ion-button>
       </ion-col>
 
-      <ion-col size="1" offset="1" *ngIf="editEmail==true" style="padding-left: 30px;">
+      <ion-col size="1" offset="0" *ngIf="editEmail==true" style="padding-left: 30px;">
         <ion-button  size="small" type="submit" color="primary"
           shape="round" style="font-weight: bold;" (click)="onSaveEmail()">
           Save
