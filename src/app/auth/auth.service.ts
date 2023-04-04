@@ -106,8 +106,6 @@ export class AuthService {
   changeEmail(newEmail: string) {
     return this.token.pipe(
       switchMap(token => {
-        console.log('TOKEN: ' + this.token)
-
         return this.http.post<ChangeDetailsResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${environment.firebaseAPIKey}`,
           {
             idToken: token,

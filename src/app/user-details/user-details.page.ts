@@ -20,9 +20,7 @@ export class UserDetailsPage implements OnInit {
 
   constructor(private authService: AuthService, private recipesService: RecipesService, private alertCtrl: AlertController) {
     this.authService.getUser().subscribe(res => {
-      console.log('Before ' + this.email)
       this.email = res.users[0].email;
-      console.log('After ' + this.email)
     })
   }
 
@@ -87,8 +85,6 @@ export class UserDetailsPage implements OnInit {
 
     else {
       this.authService.changePassword(this.newPassword).subscribe(resData => {
-        console.log(resData)
-
         this.alertCtrl.create({
           header: 'Success!',
           message: 'Password was successfuly changed.',
@@ -191,7 +187,6 @@ export class UserDetailsPage implements OnInit {
       myRecipes = recipes;
       for (var key in myRecipes) {
         this.recipesService.deleteRecipe(myRecipes[key].id).subscribe(resData => {
-          console.log(resData)
           console.log('deleted MY recipes')
         },
           () => {
@@ -209,7 +204,6 @@ export class UserDetailsPage implements OnInit {
 
   DeleteSavedRecipes() {
     this.recipesService.deleteAllSavedRecipes().subscribe(resData => {
-      console.log(resData)
       console.log('deleted saved recipes')
     },
       () => {
@@ -225,7 +219,6 @@ export class UserDetailsPage implements OnInit {
 
   DeleteAccount() {
     this.authService.deleteAccount().subscribe(resData => {
-      console.log(resData)
       console.log('deleted account')
     },
       error => {

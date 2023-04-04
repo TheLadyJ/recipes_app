@@ -15,7 +15,6 @@ export class ThemeSettingsPage implements OnInit {
   }
 
   onToggleDarkTheme(event: any){
-    console.log(event)
     if(event.detail.checked){
       document.body.setAttribute('color-theme','dark');
       ThemeSettingsPage.isDark=true;

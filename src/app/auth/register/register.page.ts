@@ -68,9 +68,7 @@ export class RegisterPage implements OnInit {
         },
           async error => {         
             let message: string = this.getErrorMessage(error.error.error.message);
-            console.log("Error cought:");
             console.log(error);
-
             loadingEl.dismiss();
             this.alertCtrl.create({
               header: 'Problem with registration',

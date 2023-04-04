@@ -42,7 +42,6 @@ export class LogInPage implements OnInit {
       this.logInForm.reset();
     },
       async error => {
-        console.log("Error cought:");
         console.log(error);
         let message: string = this.getErrorMessage(error.error.error.message);
 
