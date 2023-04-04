@@ -321,35 +321,6 @@ export class RecipesService {
     );
   }
 
-  deleteUserRecipes() {
-    let userId: string | null;
-    let userToken: string | null;
-
-    return this.authService.userId.pipe(
-      take(1),
-      switchMap((id, _index) => {
-        userId = id;
-        return this.authService.token
-      }),
-      take(1),
-      switchMap(token => {
-        userToken = token
-        return this.http
-          .get<{ [key: string]: Recipe }>(this.API_link + `/recipes.json?auth=${userToken}`)
-      }),
-      take(1),
-      tap((recipesData: any) => {
-        for (const key in recipesData) {
-          //pronalaze se recepti korisnika
-          if (recipesData.hasOwnProperty(key) && recipesData[key].userId == userId) {
-            //brise se sa liste svih recepata i kod liste sacuvanih ako postoji negde
-            this.deleteRecipe(key)
-          }
-        }
-      })
-    );
-  }
-
   deleteAllSavedRecipes() {
     let userId: string | null;
 
